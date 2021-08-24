@@ -1,0 +1,47 @@
+version: '3'
+services:
+  MyKeycloakPgDb:
+    image: postgres:13.3
+    container_name: MyKeycloakPgDb
+    ports:
+      - 12346:5432
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: Passw0rd? 
+      POSTGRES_DB: keycloakPgDb
+    networks:
+      - default
+
+  MyKeycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: MyKeycloak
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: MyKeycloakPgDb
+      DB_DATABASE: keycloakPgDb
+      DB_USER: user
+      DB_SCHEMA: public
+      DB_PASSWORD: Passw0rd?
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+    ports:
+      - 12345:8080
+    volumes:
+      - /var/folders/data/keycloak/standalone/deployments:/opt/jboss/keycloak/standalone/deployments
+    depends_on:
+      - MyKeycloakPgDb
+    networks:
+      - default
+
+networks:
+  default:
+    driver: bridge
+##########################################################################
+# Scriptet förutsätter att det finns en folder på den lokala maskinen    # 
+# som heter "/var/folders/data/keycloak/standalone/deployments" som är   #
+# åtkomlig via Docker. I den kan man lägga extensions till Keycloak som  #
+# då kommer att hot-deployas (laddas även om Keycloak redan är startat). #	                
+#								     #
+# Starta med "docker-compose up" i samma folder som det här scriptet.    #
+# Du behöver ha Docker (*nix) eller Docker Desktop (PC/Mac) installerat. #
+########################################################################## 
