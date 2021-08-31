@@ -27,7 +27,7 @@ services:
     ports:
       - 12345:8080
     volumes:
-      - /var/folders/data/keycloak/standalone/deployments:/opt/jboss/keycloak/standalone/deployments
+      - /tmp/keycloak/standalone/deployments:/opt/jboss/keycloak/standalone/deployments
     depends_on:
       - MyKeycloakPgDb
     networks:
@@ -41,7 +41,14 @@ networks:
 # som heter "/var/folders/data/keycloak/standalone/deployments" som är   #
 # åtkomlig via Docker. I den kan man lägga extensions till Keycloak som  #
 # då kommer att hot-deployas (laddas även om Keycloak redan är startat). #	                
-#								     #
+#                                                                        #
 # Starta med "docker-compose up" i samma folder som det här scriptet.    #
 # Du behöver ha Docker (*nix) eller Docker Desktop (PC/Mac) installerat. #
 ########################################################################## 
+
+# Some useful commands:
+
+# mkdir -p /tmp/keycloak/standalone/deployments
+# chmod 766 /tmp/keycloak/standalone/deployments
+# cp *.jar /tmp/keycloak/standalone/deployments
+# docker-compose up -d

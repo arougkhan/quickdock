@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  krakend:
+    image: devopsfaith/krakend:latest
+    hostname: 'mykrakend'
+    container_name: 'mykrakend-1'
+    command: run -d -c /etc/krakend/krakend.json
+    ports:
+      - "12380:8080"
+    volumes:
+      - ./krakend_config:/etc/krakend
+    networks:
+      - gatednet
+  pingtest:
+    hostname: 'pingtest'
+    container_name: 'pingtest-1'
+    build: ./pingtest
+    ports:
+      - "12381:12381"
+    networks:
+      - gatednet
+networks:
+  gatednet:
+    name: gatednet
+    driver: bridge

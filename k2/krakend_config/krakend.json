@@ -1,0 +1,48 @@
+{
+  "version": 2,
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "output_encoding": "string",
+  "name": "MyGatewayService",
+  "endpoints": [
+    {
+      "endpoint": "/ping",
+      "method": "GET",
+      "output_encoding": "string",
+      "backend": [
+        {
+          "url_pattern": "/gated_ping",
+          "host": "http://pingtest:12391",
+          "encoding": "string",
+          "sd": "static",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "endpoint": "/logping",
+      "method": "GET",
+      "headers_to_pass": [
+                "Authorization"
+            ],
+      "output_encoding": "string",
+      "extra_config": {
+          "github.com/devopsfaith/krakend-jose/validator": {
+              "alg": "RS256",
+              "roles_key": "realm_access.roles",
+              "roles": ["user", "admin"],
+              "jwk-url": "http://localhost:12395/auth/realms/master/protocol/openid-connect/certs"
+          }
+      },
+      "backend": [
+        {
+          "url_pattern": "/logged_in_ping",
+          "host": "http://pingtest:12391",
+          "encoding": "string",
+          "sd": "static",
+          "method": "GET"
+        }
+      ]
+    }
+  ]
+}

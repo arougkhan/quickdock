@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "output_encoding": "string",
+  "name": "MyGatewayService",
+  "endpoints": [
+    {
+      "endpoint": "/ping",
+      "method": "GET",
+      "output_encoding": "string",
+      "backend": [
+        {
+          "url_pattern": "/gated_ping",
+          "host": "http://pingtest:12381",
+          "encoding": "string",
+          "sd": "static",
+          "method": "GET"
+        }
+      ]
+    }
+  ]
+}

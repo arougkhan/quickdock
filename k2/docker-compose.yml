@@ -1,0 +1,71 @@
+version: "3.9"
+services:
+  pingtest:
+    hostname: 'pingtest'
+    container_name: 'pingtest-1'
+    build: ./pingtest
+    ports:
+      - "12391:12391"
+    networks:
+      - gatednet
+
+  myKrakend:
+    image: devopsfaith/krakend:latest
+    hostname: 'mykrakend'
+    container_name: 'mykrakend-1'
+    command: run -d -c /etc/krakend/krakend.json
+    ports:
+      - "12390:8080"
+    volumes:
+      - ./krakend_config:/etc/krakend
+    depends_on:
+      - myKeycloak
+    networks:
+      - gatednet
+      - authnet
+
+  myKeycloak:
+    image: quay.io/keycloak/keycloak:latest
+    hostname: 'myKeycloak'
+    container_name: myKeycloak-1
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: myKeycloakDb
+      DB_DATABASE: keycloakDb
+      DB_USER: user
+      DB_SCHEMA: public
+      DB_PASSWORD: Passw0rd?
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+    ports:
+      - 12395:8080
+    volumes:
+      - ./keycloak_config/deployments:/opt/jboss/keycloak/standalone/deployments
+    depends_on:
+      - myKeycloakDb
+    networks:
+      - authnet
+      - fortkeycloak
+
+  myKeycloakDb:
+    image: postgres:13.3
+    container_name: myKeycloakDb
+    ports:
+      - 12396:5432
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: Passw0rd? 
+      POSTGRES_DB: keycloakDb
+    networks:
+      - fortkeycloak
+
+networks:
+  gatednet:
+    name: gatednet
+    driver: bridge
+  authnet:
+    name: authnet
+    driver: bridge
+  fortkeycloak:
+    name: fortkeycloak
+    driver: bridge
