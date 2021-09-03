@@ -9,9 +9,9 @@ def ping():
 def gatedPing():
     return 'gated_pong'
 
-@app.route('/logged_in_ping')
+@app.route('/secure_ping')
 def loggedInPing():
-    return 'logged_in_pong'
+    return 'secure_pong'
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

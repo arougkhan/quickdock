@@ -1,7 +1,7 @@
 {
   "version": 2,
   "timeout": "3000ms",
-  "cache_ttl": "300s",
+  "cache_ttl": "1s",
   "output_encoding": "string",
   "name": "MyGatewayService",
   "endpoints": [
@@ -12,7 +12,7 @@
       "backend": [
         {
           "url_pattern": "/gated_ping",
-          "host": "http://pingtest:12391",
+          "host": "http://mybackend:12391",
           "encoding": "string",
           "sd": "static",
           "method": "GET"
@@ -20,24 +20,27 @@
       ]
     },
     {
-      "endpoint": "/logping",
+      "endpoint": "/secure_ping",
       "method": "GET",
-      "headers_to_pass": [
-                "Authorization"
-            ],
       "output_encoding": "string",
-      "extra_config": {
+      "extra_config": 
+        {
           "github.com/devopsfaith/krakend-jose/validator": {
-              "alg": "RS256",
-              "roles_key": "realm_access.roles",
-              "roles": ["user", "admin"],
-              "jwk-url": "http://localhost:12395/auth/realms/master/protocol/openid-connect/certs"
+            "alg": "RS256",
+            "roles_key": "realm_access.roles",
+            "roles_key_is_nested": true,
+            "roles": [
+              "secure-ping-user"
+            ],
+            "issuer": "http://FAKE_R_US",
+            "jwk-url": "https://mykeycloak:12396/auth/realms/master/protocol/openid-connect/certs",
+            "disable_jwk_security": false
           }
       },
       "backend": [
         {
-          "url_pattern": "/logged_in_ping",
-          "host": "http://pingtest:12391",
+          "url_pattern": "/secure_ping",
+          "host": "http://mybackend:12391",
           "encoding": "string",
           "sd": "static",
           "method": "GET"

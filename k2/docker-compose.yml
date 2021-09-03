@@ -1,15 +1,24 @@
 version: "3.9"
 services:
-  pingtest:
-    hostname: 'pingtest'
-    container_name: 'pingtest-1'
-    build: ./pingtest
+  myfrontend:
+    hostname: 'myfrontend'
+    container_name: 'myfrontend-1'
+    build: ./frontend
+    ports:
+      - "12399:12399"
+    networks:
+      - gatednet
+
+  mybackend:
+    hostname: 'mybackend'
+    container_name: 'mybackend-1'
+    build: ./backend
     ports:
       - "12391:12391"
     networks:
       - gatednet
 
-  myKrakend:
+  mykrakend:
     image: devopsfaith/krakend:latest
     hostname: 'mykrakend'
     container_name: 'mykrakend-1'
@@ -17,21 +26,22 @@ services:
     ports:
       - "12390:8080"
     volumes:
-      - ./krakend_config:/etc/krakend
+      - ./data/krakend_config:/etc/krakend
     depends_on:
-      - myKeycloak
+      - mykeycloak
     networks:
+      - opennet
       - gatednet
       - authnet
 
-  myKeycloak:
+  mykeycloak:
     image: quay.io/keycloak/keycloak:latest
-    hostname: 'myKeycloak'
-    container_name: myKeycloak-1
+    hostname: 'mykeycloak'
+    container_name: mykeycloak-1
     environment:
       DB_VENDOR: POSTGRES
-      DB_ADDR: myKeycloakDb
-      DB_DATABASE: keycloakDb
+      DB_ADDR: mykeycloakdb
+      DB_DATABASE: keycloakdb
       DB_USER: user
       DB_SCHEMA: public
       DB_PASSWORD: Passw0rd?
@@ -39,27 +49,30 @@ services:
       KEYCLOAK_PASSWORD: admin
     ports:
       - 12395:8080
+      - 12396:8443
     volumes:
-      - ./keycloak_config/deployments:/opt/jboss/keycloak/standalone/deployments
+      - ./data/keycloak_config/deployments:/opt/jboss/keycloak/standalone/deployments
+      - ./data/keycloak_config/configuration:/opt/jboss/keycloak/standalone/configuration
     depends_on:
-      - myKeycloakDb
+      - mykeycloakdb
     networks:
       - authnet
       - fortkeycloak
 
-  myKeycloakDb:
+  mykeycloakdb:
     image: postgres:13.3
-    container_name: myKeycloakDb
-    ports:
-      - 12396:5432
+    container_name: mykeycloakdb
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: Passw0rd? 
-      POSTGRES_DB: keycloakDb
+      POSTGRES_DB: keycloakdb
     networks:
       - fortkeycloak
 
 networks:
+  opennet:
+    name: opennet
+    driver: bridge
   gatednet:
     name: gatednet
     driver: bridge
