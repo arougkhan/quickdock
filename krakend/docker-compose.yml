@@ -3,20 +3,20 @@ services:
   krakend:
     image: devopsfaith/krakend:latest
     hostname: 'mykrakend'
-    container_name: 'mykrakend-1'
+    container_name: 'mykrakend-sa’
     command: run -d -c /etc/krakend/krakend.json
     ports:
-      - "12380:8080"
+      - "12330:8080"
     volumes:
       - ./krakend_config:/etc/krakend
     networks:
       - gatednet
   pingtest:
     hostname: 'pingtest'
-    container_name: 'pingtest-1'
+    container_name: 'pingtest-sa’
     build: ./pingtest
     ports:
-      - "12381:12381"
+      - "12339:12339"
     networks:
       - gatednet
 networks:

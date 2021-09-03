@@ -1,14 +1,14 @@
 services:
   rabbitmq:
     image: rabbitmq:management
-    hostname: 'MyRabbit'
-    container_name: 'MyRabbit-1'
+    hostname: ‘myrabbit'
+    container_name: ‘myrabbit-sa’
     ports:
       - "15672:15672"
       - "15673:5672"
     volumes:
-      - /tmp/data/MyRabbit-1/data:/var/lib/rabbitmq
-      - /tmp/data/MyRabbit-1/log:/var/log/rabbitmq
+      - ./data/myrabbit-sa/data:/var/lib/rabbitmq
+      - ./data/myrabbit-sa/log:/var/log/rabbitmq
     networks:
       - wxrabbitnet
 networks:

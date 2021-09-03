@@ -1,0 +1,82 @@
+version: "3.9"
+services:
+  myfrontend:
+    hostname: 'myfrontend'
+    container_name: 'myfrontend-k2’
+    build: ./frontend
+    ports:
+      - "12399:12399"
+    networks:
+      - gatednet
+
+  mybackend:
+    hostname: 'mybackend'
+    container_name: 'mybackend-k2’
+    build: ./backend
+    ports:
+      - "12398:12398"
+    networks:
+      - gatednet
+
+  mykrakend:
+    image: devopsfaith/krakend:latest
+    hostname: 'mykrakend'
+    container_name: 'mykrakend-k2’
+    command: run -d -c /etc/krakend/krakend.json
+    ports:
+      - "12390:8080"
+    volumes:
+      - ./data/krakend_config:/etc/krakend
+    depends_on:
+      - mykeycloak
+    networks:
+      - opennet
+      - gatednet
+
+  mykeycloak:
+    image: quay.io/keycloak/keycloak:latest
+    hostname: 'mykeycloak'
+    container_name: mykeycloak-k2
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: mykeycloakdb
+      DB_DATABASE: keycloakdb
+      DB_USER: user
+      DB_SCHEMA: public
+      DB_PASSWORD: Passw0rd?
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+    ports:
+      - 12395:8080
+      - 12396:8443
+    volumes:
+      - ./data/keycloak_config/deployments:/opt/jboss/keycloak/standalone/deployments
+      - ./data/keycloak_config/configuration:/opt/jboss/keycloak/standalone/configuration
+    depends_on:
+      - mykeycloakdb
+    networks:
+      - fortkeycloak
+
+  mykeycloakdb:
+    image: postgres:13.3
+    container_name: mykeycloakdb-k2
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: Passw0rd? 
+      POSTGRES_DB: keycloakdb
+    networks:
+      - fortkeycloak
+
+networks:
+  opennet:
+    name: opennet
+    driver: bridge
+  gatednet:
+    name: gatednet
+    driver: bridge
+  authnet:
+    name: authnet
+    driver: bridge
+  fortkeycloak:
+    name: fortkeycloak
+    driver: bridge

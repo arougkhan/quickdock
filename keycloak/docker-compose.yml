@@ -1,35 +1,34 @@
 version: '3'
 services:
-  MyKeycloakPgDb:
+  mykeycloakdb:
     image: postgres:13.3
-    container_name: MyKeycloakPgDb
-    ports:
-      - 12346:5432
+    container_name: mykeycloakdb-sa
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: Passw0rd? 
-      POSTGRES_DB: keycloakPgDb
+      POSTGRES_DB: keycloakdb
     networks:
       - default
 
-  MyKeycloak:
+  mykeycloak:
     image: quay.io/keycloak/keycloak:latest
-    container_name: MyKeycloak
+    container_name: mykeycloak-sa
     environment:
       DB_VENDOR: POSTGRES
-      DB_ADDR: MyKeycloakPgDb
-      DB_DATABASE: keycloakPgDb
+      DB_ADDR: mykeycloakdb
+      DB_DATABASE: keycloakdb
       DB_USER: user
       DB_SCHEMA: public
       DB_PASSWORD: Passw0rd?
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
     ports:
-      - 12345:8080
+      - 12305:8080
+      - 12306:8433
     volumes:
       - /tmp/keycloak/standalone/deployments:/opt/jboss/keycloak/standalone/deployments
     depends_on:
-      - MyKeycloakPgDb
+      - mykeycloakdb
     networks:
       - default
 
