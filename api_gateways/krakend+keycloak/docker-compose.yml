@@ -1,8 +1,8 @@
 version: "3.9"
 services:
   myfrontend:
-    hostname: 'myfrontend'
-    container_name: 'myfrontend-k2’
+    hostname: myfrontend
+    container_name: myfrontend-k2
     build: ./frontend
     ports:
       - "12399:12399"
@@ -10,8 +10,8 @@ services:
       - gatednet
 
   mybackend:
-    hostname: 'mybackend'
-    container_name: 'mybackend-k2’
+    hostname: mybackend
+    container_name: mybackend-k2
     build: ./backend
     ports:
       - "12398:12398"
@@ -20,8 +20,8 @@ services:
 
   mykrakend:
     image: devopsfaith/krakend:latest
-    hostname: 'mykrakend'
-    container_name: 'mykrakend-k2’
+    hostname: mykrakend
+    container_name: mykrakend-k2
     command: run -d -c /etc/krakend/krakend.json
     ports:
       - "12390:8080"
@@ -30,7 +30,6 @@ services:
     depends_on:
       - mykeycloak
     networks:
-      - opennet
       - gatednet
 
   mykeycloak:
@@ -55,6 +54,7 @@ services:
     depends_on:
       - mykeycloakdb
     networks:
+      - gatednet
       - fortkeycloak
 
   mykeycloakdb:
@@ -68,14 +68,8 @@ services:
       - fortkeycloak
 
 networks:
-  opennet:
-    name: opennet
-    driver: bridge
   gatednet:
     name: gatednet
-    driver: bridge
-  authnet:
-    name: authnet
     driver: bridge
   fortkeycloak:
     name: fortkeycloak
