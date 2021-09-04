@@ -1,0 +1,5 @@
+openssl x509 -req -in mykeycloak.careq -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out mykeycloak.crt -days 825 -sha256 -extfile config.ext
+
+# Remove old, store new
+keytool -delete -alias mykeycloak -keystore mykeycloak.jks -storepass secret
+keytool -importcert -alias mykeycloak -file mykeycloak.crt -keystore mykeycloak.jks

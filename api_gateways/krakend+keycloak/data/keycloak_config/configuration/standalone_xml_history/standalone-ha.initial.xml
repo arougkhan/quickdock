@@ -55,6 +55,13 @@
                     <properties path="application-roles.properties" relative-to="jboss.server.config.dir"/>
                 </authorization>
             </security-realm>
+            <security-realm name="UndertowRealm">
+                <server-identities>
+                    <ssl>
+                        <keystore path="mykeycloak.jks" relative-to="jboss.server.config.dir" keystore-password="secret" />
+                    </ssl>
+                </server-identities>
+            </security-realm>
         </security-realms>
         <audit-log>
             <formatters>
@@ -184,7 +191,7 @@
                 <stateless>
                     <bean-instance-pool-ref pool-name="slsb-strict-max-pool"/>
                 </stateless>
-                <stateful default-access-timeout="5000" cache-ref="simple" passivation-disabled-cache-ref="simple"/>
+                <stateful default-access-timeout="5000" cache-ref="distributable" passivation-disabled-cache-ref="simple"/>
                 <singleton default-access-timeout="5000"/>
             </session-bean>
             <pools>
@@ -365,16 +372,30 @@
                     <heap-memory size="1000"/>
                     <expiration max-idle="3600000"/>
                 </local-cache>
-                <replicated-cache name="work"/>
-                <distributed-cache name="sessions" owners="1"/>
-                <distributed-cache name="authenticationSessions" owners="1"/>
-                <distributed-cache name="offlineSessions" owners="1"/>
-                <distributed-cache name="clientSessions" owners="1"/>
-                <distributed-cache name="offlineClientSessions" owners="1"/>
-                <distributed-cache name="loginFailures" owners="1"/>
+                <replicated-cache name="work">
+                    <expiration lifespan="900000000000000000"/>
+                </replicated-cache>
+                <distributed-cache name="sessions" owners="1">
+                    <expiration lifespan="900000000000000000"/>
+                </distributed-cache>
+                <distributed-cache name="authenticationSessions" owners="1">
+                    <expiration lifespan="900000000000000000"/>
+                </distributed-cache>
+                <distributed-cache name="offlineSessions" owners="1">
+                    <expiration lifespan="900000000000000000"/>
+                </distributed-cache>
+                <distributed-cache name="clientSessions" owners="1">
+                    <expiration lifespan="900000000000000000"/>
+                </distributed-cache>
+                <distributed-cache name="offlineClientSessions" owners="1">
+                    <expiration lifespan="900000000000000000"/>
+                </distributed-cache>
+                <distributed-cache name="loginFailures" owners="1">
+                    <expiration lifespan="900000000000000000"/>
+                </distributed-cache>
                 <distributed-cache name="actionTokens" owners="2">
                     <heap-memory size="-1"/>
-                    <expiration interval="300000" max-idle="-1"/>
+                    <expiration interval="300000" lifespan="900000000000000000" max-idle="-1"/>
                 </distributed-cache>
             </cache-container>
             <cache-container name="server" default-cache="default" aliases="singleton cluster" modules="org.wildfly.clustering.server">
@@ -643,7 +664,7 @@
             <server name="default-server">
                 <ajp-listener name="ajp" socket-binding="ajp"/>
                 <http-listener name="default" socket-binding="http" redirect-socket="https" proxy-address-forwarding="${env.PROXY_ADDRESS_FORWARDING:false}" enable-http2="true"/>
-                <https-listener name="https" socket-binding="https" proxy-address-forwarding="${env.PROXY_ADDRESS_FORWARDING:false}" security-realm="ApplicationRealm" enable-http2="true"/>
+                <https-listener name="https" socket-binding="https" proxy-address-forwarding="${env.PROXY_ADDRESS_FORWARDING:false}" security-realm="UndertowRealm" enable-http2="true"/>
                 <host name="default-host" alias="localhost">
                     <location name="/" handler="welcome-content"/>
                     <http-invoker security-realm="ApplicationRealm"/>
