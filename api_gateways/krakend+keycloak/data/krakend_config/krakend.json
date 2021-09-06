@@ -32,7 +32,7 @@
             "roles": [
               "view-profile"
             ],
-            "jwk-url": "https://host.docker.internal:12396/auth/realms/test-client/protocol/openid-connect/certs",
+            "jwk-url": "https://host.docker.internal:12396/auth/realms/test-realm/protocol/openid-connect/certs",
             "disable_jwk_security": false,
             "jwk_local_ca": "/etc/krakend/ca/rootCA.pem"
           }
