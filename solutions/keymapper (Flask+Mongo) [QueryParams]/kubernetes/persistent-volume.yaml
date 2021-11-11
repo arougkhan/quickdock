@@ -1,0 +1,30 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+ name: keymapdb-volume-mount
+ labels:
+  type: local
+spec:
+ storageClassName: manual
+ capacity:
+  storage: 1Gi
+ accessModes:
+  - ReadWriteOnce
+ hostPath:
+  path: "/mnt/mongo_data"
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app:  keymapdb-volume-claim
+  name:  keymapdb-volume-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: keymapdb-volume-mount
+  storageClassName: manual
