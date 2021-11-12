@@ -1,0 +1,8 @@
+uwsgi
+flask
+flask-cors
+cryptography
+pyjwt
+requests
+psycopg2-binary
+psycopg2
