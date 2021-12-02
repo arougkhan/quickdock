@@ -1,0 +1,38 @@
+###############################
+## To run on local minicube: ##
+###############################
+eval $(minikube docker-env)
+docker build -t localhost:5005/phrases .
+kubectl create -f helm/minikube-db/secrets/phrases-db-password.yaml
+helm install -f helm/minikube-db/values-db-minikube.yaml phrases-db bitnami/postgresql
+helm install -f helm/values-minikube.yaml phrases-app helm/phrases
+minikube service --url phrases-app
+
+#######################
+## Other commands... ##
+#######################
+
+# Using local registry: Tag image and push to local registry
+(start local registry)
+docker tag phrases localhost:5005/phrases
+docker login localhost:5005 -u username -p password
+docker push localhost:5005/phrases
+
+# Get password to issue commands to db:
+export POSTGRES_PASSWORD=$(kubectl get secret --namespace default phrases-db-password -o jsonpath="{.data.postgresql-password}" | base64 --decode)
+
+## Create k8s imagePullSecret
+(docker login)
+(cat ~/.docker/config.json)
+kubectl create secret docker-registry imagePullSecret --docker-server=localhost:5005 --docker-username=admin --docker-password=admin --docker-email=admin@here.com
+
+## Inspecting secret
+# kubectl get secret regcred --output=yaml
+# kubectl get secret regcred --output="jsonpath={.data.\.dockerconfigjson}" | base64 --decode
+# echo "c3D4...AE3f" | base64 --decode
+
+## Reset minicube
+minikube delete, minikube start
+
+## Check running container
+kubectl exec --stdin --tty <deployment_name> -- /bin/bash
