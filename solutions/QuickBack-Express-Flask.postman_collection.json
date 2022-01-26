@@ -1,0 +1,565 @@
+{
+	"info": {
+		"_postman_id": "f73820a0-b989-40ec-85a6-b1e5f0c05963",
+		"name": "QuickBack-Express/Flask",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Base maps",
+			"item": [
+				{
+					"name": "Base: Add/Update keymap (keymap name in URL)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"keymap_alias\": \"this_name_is_not_used\", \"keymap\": [{\"key\": \"phrase_Q\", \"value\": \"Q from _base_ map expanded!\"}, {\"key\": \"phrase_C\", \"value\": \"C from _base_ map expanded!\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/keymap/base-map/default",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"keymap",
+								"base-map",
+								"default"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Base: Add/Update keymap (keymap name in JSON)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"keymap_alias\": \"default\", \"keymap\": [{\"key\": \"phrase_A\", \"value\": \"A from _base_ map expanded!\"}, {\"key\": \"phrase_C\", \"value\": \"C from _base_ map expanded!\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/keymap/base-map",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"keymap",
+								"base-map"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Base: Add/Update single item by JSON object",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"phrase_Ö\", \"value\": \"Ö from base map expanded!\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/keymap/base-map/default/items",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"keymap",
+								"base-map",
+								"default",
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Base: Add/Update keymap by URL and text body",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "phrase Ä from base expanded. ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/keymap/base-map/default/items/phrase_Ä",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"keymap",
+								"base-map",
+								"default",
+								"items",
+								"phrase_Ä"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Base: Get list of keymaps",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/keymap/base-maps",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"keymap",
+								"base-maps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Base: Get keymap",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/keymap/base-map/default",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"keymap",
+								"base-map",
+								"default"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Base: Delete keymap",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/keymap/base-map/default",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"keymap",
+								"base-map",
+								"default"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Base: Delete single item from keymap",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/keymap/base-map/default/items/phrase_Ö",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"keymap",
+								"base-map",
+								"default",
+								"items",
+								"phrase_Ö"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Base: Add/Replace keymap",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"keymap_alias\": \"default\", \"keymap\": [{\"key\": \"phrase_A\", \"value\": \"A from base map expanded!\"}, {\"key\": \"phrase_B\", \"value\": \"B from base map expanded!\"}, {\"key\": \"phrase_C\", \"value\": \"C from base map expanded!\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/keymap/base-map",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"keymap",
+								"base-map"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User maps",
+			"item": [
+				{
+					"name": "Add/Update keymap (name: Default)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"keymap_alias\": \"default\", \"keymap\": [{\"key\": \"phrase_A\", \"value\": \"A from _user_ map expanded!\"}, {\"key\": \"phrase_B\", \"value\": \"B from _user_ map expanded!\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/keymap/user-map",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"keymap",
+								"user-map"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add/Update single item",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"phrase_B\", \"value\" : \"B from _user_ map expanded\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/keymap/user-map/default/items",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"keymap",
+								"user-map",
+								"default",
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get list of Keymaps",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/keymap/user-maps",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"keymap",
+								"user-maps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get keymap",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/keymap/user-map/default",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"keymap",
+								"user-map",
+								"default"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get single item from keymap",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/keymap/user-map/default",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"keymap",
+								"user-map",
+								"default"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete keymap",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "body_of_this_request_is_ignored"
+						},
+						"url": {
+							"raw": "{{local}}/keymap/user-map/alpha_default",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"keymap",
+								"user-map",
+								"alpha_default"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete single item from keymap",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "body_of_this_request_is_ignored"
+						},
+						"url": {
+							"raw": "{{local}}/user/keymap/default/items/phrase_Ö",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"user",
+								"keymap",
+								"default",
+								"items",
+								"phrase_Ö"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update keymap",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"keymap_alias\": \"default\", \"keymap\": [{\"key\": \"phrase_B\", \"value\": \"B from _user_ map expanded!\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/keymap/user-map/default",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"keymap",
+								"user-map",
+								"default"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update single item in keymap",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"value\": \"Q from _user_ map expanded!\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/keymap/user-map/default/items/phrase_Q",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"keymap",
+								"user-map",
+								"default",
+								"items",
+								"phrase_Q"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Util",
+			"item": [
+				{
+					"name": "Ping",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/ping",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"ping"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get composite keymap",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/keymap/composite-map",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"keymap",
+								"composite-map"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "password",
+				"value": "PASSWORD_HERE",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "USERNAME_HERE",
+				"type": "string"
+			},
+			{
+				"key": "clientId",
+				"value": "CLIENTNAME_HERE",
+				"type": "string"
+			},
+			{
+				"key": "accessTokenUrl",
+				"value": "https://MY_KEYCLOAK/auth/realms/MY_REALM/protocol/openid-connect/token",
+				"type": "string"
+			},
+			{
+				"key": "grant_type",
+				"value": "password_credentials",
+				"type": "string"
+			},
+			{
+				"key": "tokenName",
+				"value": "Min_JWT",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "local",
+			"value": "http://localhost:5000"
+		},
+		{
+			"value": "",
+			"type": "string"
+		}
+	]
+}
