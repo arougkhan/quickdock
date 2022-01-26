@@ -2,10 +2,7 @@ version: "3.8"
 services:
   keym-app:
     hostname: ${KEYMAP_APP_HOST}
-    container_name: ${KEYMAP_APP_HOST}
-    build: ./pyflask
-    image: keymapp:0.1-SNAPSHOT
-    command: python -u main.py
+    build: .
     environment:
       - KEYMAP_DB_HOST
       - KEYMAP_DB_PORT
@@ -18,22 +15,24 @@ services:
       - IDP_JWKS_PORT
       - IDP_JWKS_PATH
       - IDP_JWT_AUDIENCE
-      - KEYMAP_DISABLE_JWT_VALIDATION
+      - DISABLE_JWT_VALIDATION
+      - ENFORCE_JWT_AUTHENTICATION
     secrets:
       - mongo_admin_password
       - mongo_admin_user
     ports:
       - ${KEYMAP_APP_PORT}:5000
     volumes:
-      - ./src:/app
+      - ./src/python/app:/app
     links:
       - keymap-db
     networks:
+#      - flyway
       - mongonet
+
   keymap-db:
-    hostname: ${KEYMAP_DB_HOST}
-    container_name: ${KEYMAP_DB_HOST}
     image : mongo
+    hostname: ${KEYMAP_DB_HOST}
     environment:
       - MONGO_INITDB_DATABASE=${KEYMAP_DB_NAME}
       - MONGO_INITDB_ROOT_USERNAME_FILE=/run/secrets/mongo_admin_user
@@ -48,6 +47,18 @@ services:
       - mongonet
     ports:
       - 27017:27017
+
+#  flyway:
+#    image: flyway/flyway:8.1
+#    command: -url=jdbc:postgresql://${KEYMAP_DB_HOST}:${KEYMAP_DB_PORT}/${KEYMAP_DB_NAME} -user=${KEYMAP_DB_USERNAME} -connectRetries=60 migrate
+#    volumes:
+#      - ./helm/keymap-service/flyway/sql:/flyway/sql
+#    environment:
+#      FLYWAY_PASSWORD: ${KEYMAP_DB_PASSWORD}
+#    networks:
+#      - postgresnet
+#    depends_on:
+#      - keymap-db
 
 secrets:
   mongo_admin_user:

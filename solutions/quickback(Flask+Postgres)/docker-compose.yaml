@@ -2,7 +2,6 @@ version: "3.8"
 services:
   keymap-app:
     hostname: ${KEYMAP_APP_HOST}
-    container_name: ${KEYMAP_APP_HOST}
     build: .
     environment:
       - KEYMAP_DB_HOST
@@ -15,6 +14,7 @@ services:
       - IDP_JWKS_PATH
       - IDP_JWT_AUDIENCE
       - DISABLE_JWT_VALIDATION
+      - ENFORCE_JWT_AUTHENTICATION
     secrets:
       - keymap-datastore-password
     volumes:
@@ -30,7 +30,6 @@ services:
   keymap-db:
     image: postgres:13.3
     hostname: ${KEYMAP_DB_HOST}
-    container_name: ${KEYMAP_DB_HOST}
     volumes:
       - ./tmp/data:/var/lib/postgresql/data
     networks:

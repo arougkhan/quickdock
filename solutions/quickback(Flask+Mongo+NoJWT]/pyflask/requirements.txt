@@ -1,6 +1,0 @@
-flask
-flask-cors
-cryptography
-pymongo
-pyjwt
-requests
