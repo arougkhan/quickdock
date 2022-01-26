@@ -1,0 +1,68 @@
+version: "3.8"
+services:
+  phrases:
+    hostname: node_keymap
+    container_name: node_keymap
+    build: .
+    environment:
+      - PHRASES_DB_HOST
+      - PHRASES_DB_PORT
+      - PHRASES_DB_USERNAME
+      - PHRASES_DB_PASSWORD_FILE=/run/secrets/phrases-datastore-password
+      - PHRASES_DB_NAME
+      - IDP_JWKS_HOST
+      - IDP_JWKS_PORT
+      - IDP_JWKS_PATH
+      - IDP_JWT_AUDIENCE
+      - DISABLE_JWT_VALIDATION
+#    secrets:
+#      - phrases-datastore-password
+#    volumes:
+#      - ./src/python/app:/app
+    ports:
+      - 5001:5001
+    networks:
+      - postgresnet
+    depends_on:
+      - flyway
+      - keymap-datastore
+
+  keymap-datastore:
+    image: postgres:13.3
+    hostname: node_db
+    container_name: node_db
+#    volumes:
+#      - ./tmp/data:/var/lib/postgresql/data
+    networks:
+      - postgresnet
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+#      POSTGRES_PASSWORD_FILE: /run/secrets/phrases-datastore-password
+      POSTGRES_DB: keymap
+#    secrets:
+#      - phrases-datastore-password
+
+  flyway:
+    image: flyway/flyway:8.1
+    command: -url=jdbc:postgresql://node_db:5432/keymap -user=postgres -connectRetries=60 migrate
+    volumes:
+      - ./helm/flyway/sql:/flyway/sql
+    environment:
+      FLYWAY_PASSWORD: password
+    networks:
+      - postgresnet
+    depends_on:
+     - keymap-datastore
+
+#secrets:
+#  phrases-datastore-password:
+#    file: ./secrets/phrases-datastore-password
+
+networks:
+  postgresnet:
+    name: postgresnet
+    driver: bridge
+

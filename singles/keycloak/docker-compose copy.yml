@@ -1,0 +1,42 @@
+
+###########################
+## Keycloak Admin klient ##
+###########################
+
+## Using Spring Boot
+
+Create service client:
+| Realm -> Client -> Create - > "my-keycloak-admin"
+|
+| Go to Clients -> my-keycloak-admin -> tab:Settings
+| Set Access Type -> confidential
+| Set Service Accounts Enabled -> on
+
+Add roles to service account:
+| Go to Clients -> my-keycloak-admin -> tab:Service Account Roles
+| Choose Client Roles -> "realm-management"
+| Add roles needed (i.e. 'manage-authorization', 'manage-users', 'manage-realm')
+
+Copy or set secret to use for authentication: 
+| Go to Clients -> my-keycloak-admin -> tab:Credentials
+| Note Secret (e.g. "FFbpAaTjE0evLAordpfddYex6XY7Pt14")
+
+
+
+###############################################################
+# // Using Java code:                                         #
+# Keycloak keycloak = KeycloakBuilder.builder()               #
+#     .serverUrl("http://localhost:8080/auth")                #
+#     .grantType(OAuth2Constants.CLIENT_CREDENTIALS)          #
+#     .realm("realm-name")                                    #
+#     .clientId("keycloak-admin")                             #
+#     .clientSecret("1c7e2815-c4dc-401c-af2f-ebddad3b4a79")   #
+#     .resteasyClient(                                        #
+#         new ResteasyClientBuilder()                         #
+#             .connectionPoolSize(10).build()                 #
+#     ).build();                                              #
+#                                                             #
+# keycloak.tokenManager().getAccessToken();                   #
+# RealmResource realmResource = keycloak.realm("realm-name"); #
+###############################################################
+

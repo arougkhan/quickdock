@@ -1,0 +1,12 @@
+/solutions/quickback(Flask+Postgres)/.idea/
+/solutions/quickback(Flask+Postgres)/tmp/
+/solutions/quickback(Flask+Postgres)/src/__pycache__/ 
+/solutions/quickback(Flask+Mongo)/.idea/
+/solutions/quickback(Flask+Mongo)/tmp/
+/solutions/quickback(Flask+Mongo)/src/__pycache__/
+/solutions/quickback(Express+Postgres)/.idea/
+/solutions/quickback(Express+Postgres)/tmp/
+/solutions/quickback(Express+Postgres)/src/node/build/
+/solutions/quickback(Flask+Mongo+NoJWT)/.idea/
+/solutions/quickback(Flask+Mongo+NoJWT)/tmp
+/solutions/quickback(Flask+Mongo+NoJWT)/src/__pycache__

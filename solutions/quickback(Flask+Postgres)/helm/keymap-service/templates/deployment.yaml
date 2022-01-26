@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "keymap.fullname" . }}
+  labels:
+    {{- include "keymap.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "keymap.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "keymap.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- if and .Values.secrets.imagePullSecret.username .Values.secrets.imagePullSecret.password }}
+      imagePullSecrets:
+        - name: {{.Chart.Name}}-imagepullsecret
+      {{- end }}
+      serviceAccountName: {{ include "keymap.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: flyway-migration
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 101
+          image: flyway/flyway:8.1
+          args:
+            - migrate
+          env:
+            - name: FLYWAY_URL
+              value: "jdbc:postgresql://{{.Values.db.host}}:{{.Values.db.port}}/{{.Values.db.database}}"
+            - name: FLYWAY_USER
+              value: {{.Values.db.username}}
+            - name: FLYWAY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{.Chart.Name}}-datastore
+                  key: password
+          volumeMounts:
+            - mountPath: /flyway/sql
+              name: sql
+      volumes:
+        - name: sql
+          configMap:
+            name: flyway-migration-{{.Chart.Name}}-configmap
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.version }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: PHRASES_DB_HOST
+              value: {{.Values.db.host}}
+            - name: PHRASES_DB_PORT
+              value: "{{.Values.db.port}}"
+            - name: PHRASES_DB_NAME
+              value: {{.Values.db.database}}
+            - name: PHRASES_DB_USERNAME
+              value: {{.Values.db.username}}
+            {{- range $name, $val := .Values.environment }}
+            - name: {{ $name }}
+              value: {{ $val | quote }}
+            {{- end }}
+            {{- if .Values.db.password }}
+            - name: PHRASES_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{.Chart.Name}}-datastore
+                  key: password
+            {{- end }}
+          ports:
+            - containerPort: {{ .Values.service.containerPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: {{ .Values.service.containerPort }}
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: {{ .Values.service.containerPort }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

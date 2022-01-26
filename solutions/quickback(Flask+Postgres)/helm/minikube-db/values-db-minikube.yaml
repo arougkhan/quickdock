@@ -1,0 +1,9 @@
+profiles: minikube
+fullnameOverride: "postgresql"
+
+global:
+  postgresql:
+    existingSecret: keymap-datastore
+    postgresqlDatabase: keymap
+    postgresqlUsername: postgres
+#    postgresqlPassword: this will be set from existingSecret with key 'data.postgresql-password'

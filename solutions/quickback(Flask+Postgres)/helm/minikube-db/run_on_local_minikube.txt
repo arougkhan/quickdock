@@ -1,0 +1,49 @@
+###############################
+## To run on local minicube: ##
+###############################
+eval $(minikube docker-env)
+docker build -t keymap-service .
+kubectl create -f helm/minikube-db/secrets/keymap-minikube-datastore.yaml
+helm upgrade --install -f helm/minikube-db/values-db-minikube.yaml keymap-db bitnami/postgresql
+helm upgrade --install -f helm/values-minikube.yaml keymap-app helm/keymap-service
+minikube service --url phrases
+
+#######################
+## Other commands... ##
+#######################
+
+# Using local registry: Tag image and push to local registry
+(start local registry)
+docker tag keymap localhost:5005/keymap
+docker login localhost:5005 -u username -p password
+docker push localhost:5005/keymap
+
+# Get password to issue commands to db:
+export POSTGRES_PASSWORD=$(kubectl get secret --namespace default phrases-db-password -o jsonpath="{.data.postgresql-password}" | base64 --decode)
+
+## Create k8s imagePullSecret
+(docker login)
+(cat ~/.docker/config.json)
+kubectl create secret docker-registry imagePullSecret --docker-server=localhost:5005 --docker-username=admin --docker-password=admin --docker-email=admin@here.com
+
+## Inspecting secret
+# kubectl get secret regcred --output=yaml
+# kubectl get secret regcred --output="jsonpath={.data.\.dockerconfigjson}" | base64 --decode
+# echo "c3D4...AE3f" | base64 --decode
+
+## Reset minicube
+minikube delete, minikube start
+
+## Check running container
+kubectl exec --stdin --tty <deployment_name> -- /bin/bash
+
+## Check for errors
+kubectl get pods
+# gives us pod name-> [myPod-12345abc]
+kubectl describe pod [myPod-12345abc]
+# gives us container name-> [nameOfContainer]
+kubectl logs [myPod-12345abc] -c [nameOfContainer]
+
+## Uninstalling
+# release names: keymap-db, keymap-app
+# uninstall with: helm uninstall [releaseName]

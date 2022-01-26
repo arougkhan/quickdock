@@ -1,0 +1,35 @@
+profiles: development
+fullnameOverride: "keymap-service"
+localDatastoreSecret: true
+
+db:
+  host: postgresql
+  port: 5432
+  database: keymap
+  username: postgres
+  password: password
+
+secrets:
+  imagePullSecret:
+    username: "admin"
+    password: "admin"
+
+image:
+  repository: "<<Insert repository name here >>"
+  version: latest
+  pullPolicy: Never
+
+podSecurityContext:
+  runAsUser: 1000
+  runAsGroup: 500
+
+ingress:
+  enabled: false
+
+environment:
+  DISABLE_JWT_VALIDATION: true
+  IDP_JWKS_HOST:
+  IDP_JWKS_PORT: "443"
+  IDP_JWKS_PATH: /auth/realms/MY_REALM/protocol/openid-connect/certs
+  IDP_JWT_AUDIENCE: account
+

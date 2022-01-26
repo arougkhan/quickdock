@@ -1,8 +1,0 @@
-flask
-flask-cors
-cryptography
-pyjwt
-requests
-pymongo
-psycopg2-binary
-psycopg2
